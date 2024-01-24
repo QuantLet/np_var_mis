@@ -21,7 +21,7 @@ def sigma(t):
 def sigma_reg(t,n):
     #return 0.5*(1.5-t) Efromovich
     #return 0.4 + 2*t #https://www.ruhr-uni-bochum.de/imperia/md/content/mathematik3/publications/proctest21.pdf
-    return 0.4 * np.exp(-2*(t**2)) + 0.2 + eps(0, 1, n)
+    return 0.4 * np.exp(-2*(t**2)) + 0.2 
 
 # True unknown relationship
 def f(X,n):
@@ -66,4 +66,20 @@ def nw_cc(h,x,X,y,p,n):
     dem = sum(omega*norm.pdf((x-X)/h))
     return num/dem
 
+#### Residual based
+
+# Nadaraya Watson Estimator with a Gaussian Kernel 
+def sigma_res(h,x,X,r):
+    num = sum(r*norm.pdf((x-X)/h))
+    dem = sum(norm.pdf((x-X)/h))
+    return np.sqrt(num/dem)
+
+
+# HW-type NW estimator 
+def sigma_mis_res(h,x,X,r,p,n):
+    omega = bernoulli.rvs(p, size=n)
+    r = (r*omega)/p
+    num = sum(r*norm.pdf((x-X)/h))
+    dem = sum((omega/p)*norm.pdf((x-X)/h))
+    return np.sqrt(num/dem)
 
