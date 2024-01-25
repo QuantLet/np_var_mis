@@ -45,22 +45,20 @@ def pi(y,b0,b1):
     return 1/(1+np.exp(-lin))
 
 # NW-estimated pi_hat 
-def pi_hat(h,y_i,Y,p,n):
-    omega = bernoulli.rvs(p, size=n)
+def pi_hat(h,y_i,Y,p,omega):
+    random.seed(24)
     num = sum(omega*norm.pdf((y_i-Y)/h))
     dem = sum(norm.pdf((y_i-Y)/h))
     return num/dem
 
 # HW-type NW estimator 
-def nw_mis(h,x,X,y,p,n):
-    omega = bernoulli.rvs(p, size=n)
+def nw_mis(h,x,X,y,p,omega):
     y = (y*omega)/p
     num = sum(y*norm.pdf((x-X)/h))
     dem = sum((omega/p)*norm.pdf((x-X)/h))
     return num/dem
 
-def nw_cc(h,x,X,y,p,n):
-    omega = bernoulli.rvs(p, size=n)
+def nw_cc(h,x,X,y,p,omega):
     y = (y*omega)
     num = sum(y*norm.pdf((x-X)/h))
     dem = sum(omega*norm.pdf((x-X)/h))
@@ -76,8 +74,7 @@ def sigma_res(h,x,X,r):
 
 
 # HW-type NW estimator 
-def sigma_mis_res(h,x,X,r,p,n):
-    omega = bernoulli.rvs(p, size=n)
+def sigma_mis_res(h,x,X,r,p,omega):
     r = (r*omega)/p
     num = sum(r*norm.pdf((x-X)/h))
     dem = sum((omega/p)*norm.pdf((x-X)/h))
@@ -95,11 +92,12 @@ def diff_vol(h,x,X,y):
     den = sum(norm.pdf((x-X[:(len(X)-1)])/h))
     return np.sqrt(num/den)
 
-def diff_vol_mis(h,x,X,y,p,n):
+
+
+def diff_vol_mis(h,x,X,y,p,omega):
     diff = []
     for i in range(1,len(y)):
         diff.append(((y[i-1]-y[i])**2)/2)
-    omega = bernoulli.rvs(p, size=n)
     p = p[:(len(p)-1)]
     diff = diff/p
     num = sum(diff*norm.pdf((x-X[:(len(X)-1)])/h))
