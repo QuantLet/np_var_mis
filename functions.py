@@ -34,8 +34,8 @@ def fan(X,n,a):
 # Nadaraya Watson Estimator with a Gaussian Kernel 
 def nw(h,x,X,y):
     num = sum(y*norm.pdf((x-X)/h))
-    dem = sum(norm.pdf((x-X)/h))
-    return num/dem
+    den = sum(norm.pdf((x-X)/h))
+    return num/den
 
 #### Missing values ß
 
@@ -82,4 +82,27 @@ def sigma_mis_res(h,x,X,r,p,n):
     num = sum(r*norm.pdf((x-X)/h))
     dem = sum((omega/p)*norm.pdf((x-X)/h))
     return np.sqrt(num/dem)
+
+#### Difference-based estimator 
+
+#We need a Kernel that sums up to one. Choose weights better
+
+def diff_vol(h,x,X,y):
+    diff = []
+    for i in range(1,len(y)):
+        diff.append(((y[i-1]-y[i])**2)/2)
+    num = sum(diff*norm.pdf((x-X[:(len(X)-1)])/h))
+    den = sum(norm.pdf((x-X[:(len(X)-1)])/h))
+    return np.sqrt(num/den)
+
+def diff_vol_mis(h,x,X,y,p,n):
+    diff = []
+    for i in range(1,len(y)):
+        diff.append(((y[i-1]-y[i])**2)/2)
+    omega = bernoulli.rvs(p, size=n)
+    p = p[:(len(p)-1)]
+    diff = diff/p
+    num = sum(diff*norm.pdf((x-X[:(len(X)-1)])/h))
+    den = sum(norm.pdf((x-X[:(len(X)-1)])/h)/p)
+    return np.sqrt(num/den)
 
