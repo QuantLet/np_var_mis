@@ -7,7 +7,7 @@ from scipy.stats import norm, bernoulli
 # Nonparametric regression 
 
 def eps(mu,sigma,n):
-    random.seed(24)
+    random.seed(240)
     return np.random.normal(mu,sigma,n)
 
 # Variance function
@@ -27,8 +27,8 @@ def sigma_reg(t,n):
 def f(X,n):
     return (np.sin(2*np.pi*(X)**3))**3 + sigma(X)*eps(0, 1,  n)
 
-def fan(X,n,a):
-    return a*(X+2*np.exp(-16* (X**2))) + sigma(X)*eps(0, 1,  n)
+def fan(X,n,a,eps):
+    return a*(X+2*np.exp(-16* (X**2))) + sigma(X)*eps
 
 
 # Nadaraya Watson Estimator with a Gaussian Kernel 
