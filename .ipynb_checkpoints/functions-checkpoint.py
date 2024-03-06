@@ -104,3 +104,11 @@ def diff_vol_mis(h,x,X,y,p,omega):
     den = sum(norm.pdf((x-X[:(len(X)-1)])/h)/p)
     return np.sqrt(num/den)
 
+def r(h):
+    #print(1)
+    summe = 0 
+    for j in range(len(df)):
+        df1 = df.drop([j],axis=0)
+        y_hat = nw_mis(h,df.x[j],df1.x,df1.y,pi(df1.y,b0,b1),df1.omega)
+        summe = summe + (df.y[j]-y_hat)**2
+    return summe/len(df)
