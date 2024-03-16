@@ -21,7 +21,7 @@ def sigma(t):
 def sigma_reg(t,n):
     #return 0.5*(1.5-t) Efromovich
     #return 0.4 + 2*t #https://www.ruhr-uni-bochum.de/imperia/md/content/mathematik3/publications/proctest21.pdf
-    return 0.4 * np.exp(-2*(t**2)) + 0.2 
+    return 0.4 * np.exp(-2*(t**2)) + 0.2
 
 # True unknown relationship
 def f(X,n):
@@ -41,8 +41,10 @@ def nw(h,x,X,y):
 
 #Logistic probability of observation 
 def pi(y,b0,b1):
-    lin = b0 + b1 *y 
+    lin = b0 + b1 *((y)/100)**2  
     return 1/(1+np.exp(-lin))
+
+
 
 # NW-estimated pi_hat 
 def pi_hat(h,y_i,Y,p,omega):
@@ -51,9 +53,17 @@ def pi_hat(h,y_i,Y,p,omega):
     dem = sum(norm.pdf((y_i-Y)/h))
     return num/dem
 
+def pi_hat(h,y_i,Y,p,omega):
+    random.seed(24)
+    num = sum(omega*norm.pdf((y_i-Y)/h))
+    dem = sum(norm.pdf((y_i-Y)/h))
+    return num/dem
+
 # HW-type NW estimator 
 def nw_mis(h,x,X,y,p,omega):
-    y = (y*omega)/p
+    #if h < 0.001:
+    #    h = 0.001
+    y = ((y*omega)/p)
     num = sum(y*norm.pdf((x-X)/h))
     dem = sum((omega/p)*norm.pdf((x-X)/h))
     return num/dem
@@ -71,6 +81,19 @@ def sigma_res(h,x,X,r):
     num = sum(r*norm.pdf((x-X)/h))
     dem = sum(norm.pdf((x-X)/h))
     return np.sqrt(num/dem)
+
+def sigma_dir(h,x,X,y):
+    #K = Kernel 
+    #Estimate Y_n
+    num = sum(y*norm.pdf((x-X)/h))
+    den = sum(norm.pdf((x-X)/h))
+    mn=num/dem
+    
+    #Estimate vn
+    num = sum((y**2)*norm.pdf((x-X)/h))
+    den = sum(norm.pdf((x-X)/h))
+    vn = num/dem
+    return vn - (mn)**2
 
 
 # HW-type NW estimator 
